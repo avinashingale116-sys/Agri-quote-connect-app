@@ -1,12 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { User, QuotationRequest, Tractor, Quote } from '../types';
 import { RequestService, TractorService, UserService } from '../services/mockBackend';
 import { useLanguage } from '../contexts/LanguageContext';
-
-interface Props {
-  user: User;
-  onNavigate: (view: 'landing' | 'dashboard') => void;
-}
 
 const BRAND_LOGOS: Record<string, string> = {
   'Mahindra': 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Mahindra_Rise_logo.svg/320px-Mahindra_Rise_logo.svg.png',
@@ -31,12 +27,19 @@ const BRAND_HERO_IMAGES: Record<string, string> = {
   'Swaraj': 'https://images.unsplash.com/photo-1589923188900-85dae5233271?q=80&w=1000&auto=format&fit=crop'
 };
 
+// Define the missing Props interface for CustomerDashboard
+interface Props {
+  user: User;
+  onNavigate: (view: 'landing' | 'dashboard') => void;
+}
+
 const CustomerDashboard: React.FC<Props> = ({ user, onNavigate }) => {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'new' | 'list'>('list');
   const [requests, setRequests] = useState<QuotationRequest[]>([]);
   const [tractors, setTractors] = useState<Tractor[]>([]);
   const [availableBrands, setAvailableBrands] = useState<string[]>([]);
+  const [dealers, setDealers] = useState<User[]>([]);
   const [refresh, setRefresh] = useState(0);
 
   // New Request Form State
@@ -48,10 +51,18 @@ const CustomerDashboard: React.FC<Props> = ({ user, onNavigate }) => {
     const allTractors = TractorService.getAll();
     setTractors(allTractors);
     setAvailableBrands(TractorService.getUniqueBrands());
+    setDealers(UserService.getAllDealers());
   }, [user.id, refresh]);
 
   const availableModels = tractors.filter(t => !selectedBrand || t.brand === selectedBrand);
   const selectedTractor = tractors.find(t => t.id === selectedModel);
+
+  // Filter matched dealers for visual confirmation
+  const matchedDealers = dealers.filter(d => 
+    d.district === user.district && 
+    d.isApproved && 
+    (selectedBrand === '' || d.brands?.includes(selectedBrand))
+  );
 
   const handleSubmitRequest = () => {
     if (!selectedModel || !selectedTractor) return;
@@ -96,49 +107,78 @@ const CustomerDashboard: React.FC<Props> = ({ user, onNavigate }) => {
       {activeTab === 'new' && (
         <div className="grid md:grid-cols-2 gap-8">
             {/* Left Column: Selection Form */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">{t.selectTractor}</h3>
-                <div className="space-y-6">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 h-fit space-y-6">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{t.brandFilter}</label>
-                    <select
-                    className="block w-full rounded-md border border-gray-300 shadow-sm p-3 focus:ring-green-500 focus:border-green-500"
-                    value={selectedBrand}
-                    onChange={(e) => {
-                        setSelectedBrand(e.target.value);
-                        setSelectedModel('');
-                    }}
-                    >
-                    <option value="">{t.allBrands}</option>
-                    {availableBrands.map(b => <option key={b} value={b}>{b}</option>)}
-                    </select>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">{t.selectTractor}</h3>
+                    <div className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t.brandFilter}</label>
+                            <select
+                            className="block w-full rounded-md border border-gray-300 shadow-sm p-3 focus:ring-green-500 focus:border-green-500"
+                            value={selectedBrand}
+                            onChange={(e) => {
+                                setSelectedBrand(e.target.value);
+                                setSelectedModel('');
+                            }}
+                            >
+                            <option value="">{t.allBrands}</option>
+                            {availableBrands.map(b => <option key={b} value={b}>{b}</option>)}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t.model}</label>
+                            <select
+                            className="block w-full rounded-md border border-gray-300 shadow-sm p-3 focus:ring-green-500 focus:border-green-500"
+                            value={selectedModel}
+                            onChange={(e) => setSelectedModel(e.target.value)}
+                            >
+                            <option value="">{t.selectModel}</option>
+                            {availableModels.map(t => (
+                                <option key={t.id} value={t.id}>{t.brand} {t.model} ({t.hp} HP)</option>
+                            ))}
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">{t.model}</label>
-                    <select
-                    className="block w-full rounded-md border border-gray-300 shadow-sm p-3 focus:ring-green-500 focus:border-green-500"
-                    value={selectedModel}
-                    onChange={(e) => setSelectedModel(e.target.value)}
-                    >
-                    <option value="">{t.selectModel}</option>
-                    {availableModels.map(t => (
-                        <option key={t.id} value={t.id}>{t.brand} {t.model} ({t.hp} HP)</option>
-                    ))}
-                    </select>
-                </div>
+                {/* Dealer Network Insight */}
+                {selectedBrand && (
+                    <div className="p-4 bg-green-50 rounded-lg border border-green-100 animate-fade-in">
+                        <h4 className="text-sm font-bold text-green-800 mb-2 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            Your request will be sent to:
+                        </h4>
+                        <div className="space-y-1.5">
+                            {matchedDealers.length > 0 ? (
+                                matchedDealers.map(dealer => (
+                                    <div key={dealer.id} className="flex items-center gap-2 text-sm text-gray-700 font-medium">
+                                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                                        {dealer.showroomName}
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-xs text-red-500 italic">No authorized dealers for {selectedBrand} found in {user.district} yet.</p>
+                            )}
+                        </div>
+                        <p className="text-[10px] text-gray-500 mt-3 border-t border-green-200/50 pt-2">
+                            * Only authorized and admin-approved dealers in your district receive requests.
+                        </p>
+                    </div>
+                )}
 
                 <button
-                    disabled={!selectedModel}
+                    disabled={!selectedModel || matchedDealers.length === 0}
                     onClick={handleSubmitRequest}
-                    className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-gray-300 text-white font-bold py-3 px-4 rounded-lg mt-4 transition-colors shadow-lg shadow-orange-200"
+                    className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-gray-300 text-white font-bold py-3 px-4 rounded-lg transition-colors shadow-lg shadow-orange-200"
                 >
                     {t.submitRequest} {user.district}
                 </button>
-                </div>
             </div>
 
-            {/* Right Column: Specifications & YouTube Display (No Tractor Image) */}
+            {/* Right Column: Specifications & YouTube Display */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col min-h-[400px]">
                 {selectedTractor ? (
                     <div className="w-full h-full flex flex-col animate-fade-in">
@@ -298,7 +338,6 @@ const RequestCard: React.FC<{ request: QuotationRequest }> = ({ request }) => {
         const printWindow = window.open('', '_blank');
         if (!printWindow) return;
 
-        // Fetch full customer and dealer objects for complete address info
         const customerUser = UserService.getUser(request.customerId);
         const dealerUser = UserService.getUser(quote.dealerId);
 
@@ -480,8 +519,6 @@ const RequestCard: React.FC<{ request: QuotationRequest }> = ({ request }) => {
                     </div>
                 ) : (
                     request.quotes.map(quote => {
-                        // Dynamically determine the mobile number. 
-                        // Prioritize the number stored in the quote, fallback to live user data if available.
                         const dealerMobile = quote.dealerMobile || UserService.getUser(quote.dealerId)?.mobile || '9999999999';
 
                         return (
