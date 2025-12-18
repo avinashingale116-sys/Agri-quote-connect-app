@@ -1,3 +1,4 @@
+
 export const translations = {
   en: {
     // Layout
@@ -46,6 +47,9 @@ export const translations = {
     adminPanel: "Admin Panel",
     dealerPortal: "Dealer Portal",
     farmerDashboard: "Farmer Dashboard",
+    exploreCatalog: "Explore Our Catalog",
+    supportedBrands: "Supported Brands & Models",
+    viewModels: "View Models",
 
     // Customer Dashboard
     myQuotations: "My Quotations",
@@ -107,6 +111,7 @@ export const translations = {
     notesPlaceholder: "e.g. Price includes insurance. 5% interest rate available.",
     cancel: "Cancel",
     sendQuote: "Send Quotation",
+    callCustomer: "Call Farmer",
 
     // Admin Dashboard
     dealerApprovals: "Dealer Approvals",
@@ -129,8 +134,8 @@ export const translations = {
     modelName: "Model Name",
     hp: "HP",
     imageUrl: "Image URL",
-    addToPlatform: "प्लॅटफॉर्मवर जोडा",
-    delete: "हटवा",
+    addToPlatform: "Add to Platform",
+    delete: "Delete",
     requestVolume: "Request Volume by Brand",
     platformStats: "Platform Stats",
     totalUsers: "Total Users",
@@ -139,7 +144,8 @@ export const translations = {
     simulated: "(simulated)",
     noneAssigned: "None assigned",
     cancelEdit: "Cancel",
-    save: "Save"
+    save: "Save",
+    youtubeIdLabel: "YouTube Video ID"
   },
   mr: {
     // Layout
@@ -188,6 +194,9 @@ export const translations = {
     adminPanel: "प्रशासक पॅनेल",
     dealerPortal: "डीलर पोर्टल",
     farmerDashboard: "शेतकरी डॅशबोर्ड",
+    exploreCatalog: "आमची ट्रॅक्टर यादी",
+    supportedBrands: "समर्थित ब्रँड्स आणि मॉडेल्स",
+    viewModels: "मॉडेल्स पहा",
 
     // Customer Dashboard
     myQuotations: "माझे कोटेशन्स",
@@ -249,6 +258,7 @@ export const translations = {
     notesPlaceholder: "उदा. किंमतीत विमा समाविष्ट आहे. ५% व्याजदर उपलब्ध.",
     cancel: "रद्द करा",
     sendQuote: "कोटेशन पाठवा",
+    callCustomer: "शेतकऱ्याला कॉल करा",
 
     // Admin Dashboard
     dealerApprovals: "डीलर मान्यता",
@@ -281,6 +291,7 @@ export const translations = {
     simulated: "(सिम्युलेटेड)",
     noneAssigned: "नेमून दिले नाही",
     cancelEdit: "रद्द",
-    save: "जतन करा"
+    save: "जतन करा",
+    youtubeIdLabel: "यूट्यूब व्हिडिओ ID"
   }
 };

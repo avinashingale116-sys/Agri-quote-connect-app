@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { User, QuotationRequest } from '../types';
-import { RequestService } from '../services/mockBackend';
+import { RequestService, UserService } from '../services/mockBackend';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface Props {
@@ -74,12 +75,15 @@ const DealerDashboard: React.FC<Props> = ({ user, onNavigate }) => {
             requests.map(req => {
                 const myQuote = req.quotes.find(q => q.dealerId === user.id);
                 const isQuoting = quotingRequestId === req.id;
+                
+                // Fetch customer details if quoted to enable "Call Customer"
+                const customer = myQuote ? UserService.getUser(req.customerId) : null;
 
                 return (
                     <div key={req.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 transition hover:shadow-md">
                         <div className="flex flex-col md:flex-row justify-between md:items-start gap-4">
                             <div className="flex items-start gap-4">
-                                <img src={req.tractorSnapshot.image} className="w-20 h-20 rounded bg-gray-200 object-cover" alt="tractor" />
+                                <img src={req.tractorSnapshot.image} className="w-20 h-20 rounded bg-gray-200 object-cover border border-gray-100 shadow-sm" alt="tractor" />
                                 <div>
                                     <span className="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-gray-100 text-gray-600 mb-1">
                                         {t.requestedOn}: {new Date(req.createdAt).toLocaleDateString()}
@@ -90,20 +94,32 @@ const DealerDashboard: React.FC<Props> = ({ user, onNavigate }) => {
                                 </div>
                             </div>
                             
-                            <div className="md:text-right">
+                            <div className="md:text-right flex flex-col items-end gap-2">
                                 {myQuote ? (
                                     <div className="text-sm">
-                                        <p className="text-green-700 font-semibold flex items-center gap-1">
+                                        <p className="text-green-700 font-semibold flex items-center justify-end gap-1">
                                             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
                                             {t.quoteSubmitted}
                                         </p>
                                         <p className="font-bold text-gray-900 mt-1">₹{myQuote.finalPrice.toLocaleString()}</p>
-                                        <button 
-                                            onClick={() => setQuotingRequestId(req.id)}
-                                            className="text-xs text-gray-500 underline mt-2 hover:text-gray-700"
-                                        >
-                                            {t.editQuote}
-                                        </button>
+                                        
+                                        <div className="mt-3 flex flex-col gap-2 min-w-[140px]">
+                                          {customer?.mobile && (
+                                            <a 
+                                              href={`tel:${customer.mobile}`}
+                                              className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-xs transition-colors flex items-center justify-center gap-1 shadow-sm"
+                                            >
+                                              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+                                              {t.callCustomer}
+                                            </a>
+                                          )}
+                                          <button 
+                                              onClick={() => setQuotingRequestId(req.id)}
+                                              className="text-xs text-gray-500 underline hover:text-gray-700"
+                                          >
+                                              {t.editQuote}
+                                          </button>
+                                        </div>
                                     </div>
                                 ) : (
                                     !isQuoting && (
