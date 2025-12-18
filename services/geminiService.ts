@@ -1,7 +1,9 @@
+
 import { GoogleGenAI, Type } from "@google/genai";
 import { TractorService } from "./mockBackend";
 
 export const getTractorAdvice = async (userPrompt: string): Promise<{ text: string, recommendedTractorId?: string }> => {
+  // Use process.env.API_KEY directly as required by guidelines
   const apiKey = process.env.API_KEY;
 
   if (!apiKey) {
@@ -13,6 +15,7 @@ export const getTractorAdvice = async (userPrompt: string): Promise<{ text: stri
   }
 
   try {
+    // Correct initialization using a named parameter object with apiKey
     const ai = new GoogleGenAI({ apiKey });
     const tractors = TractorService.getAll();
     
@@ -30,8 +33,9 @@ export const getTractorAdvice = async (userPrompt: string): Promise<{ text: stri
       Provide a short, helpful explanation in simple English suitable for a farmer.
     `;
 
+    // Updated model name to gemini-3-flash-preview for Basic Text Tasks per guidelines
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       contents: userPrompt,
       config: {
         systemInstruction: systemInstruction,
@@ -47,6 +51,7 @@ export const getTractorAdvice = async (userPrompt: string): Promise<{ text: stri
       }
     });
 
+    // The GenerateContentResponse features a 'text' property (not a method)
     const result = JSON.parse(response.text || '{}');
     return {
       text: result.explanation,

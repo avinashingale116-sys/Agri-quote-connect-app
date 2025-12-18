@@ -47,9 +47,6 @@ export const translations = {
     adminPanel: "Admin Panel",
     dealerPortal: "Dealer Portal",
     farmerDashboard: "Farmer Dashboard",
-    exploreCatalog: "Explore Our Catalog",
-    supportedBrands: "Supported Brands & Models",
-    viewModels: "View Models",
 
     // Customer Dashboard
     myQuotations: "My Quotations",
@@ -134,8 +131,8 @@ export const translations = {
     modelName: "Model Name",
     hp: "HP",
     imageUrl: "Image URL",
-    addToPlatform: "Add to Platform",
-    delete: "Delete",
+    addToPlatform: "प्लॅटफॉर्मवर जोडा",
+    delete: "हटवा",
     requestVolume: "Request Volume by Brand",
     platformStats: "Platform Stats",
     totalUsers: "Total Users",
@@ -144,8 +141,7 @@ export const translations = {
     simulated: "(simulated)",
     noneAssigned: "None assigned",
     cancelEdit: "Cancel",
-    save: "Save",
-    youtubeIdLabel: "YouTube Video ID"
+    save: "Save"
   },
   mr: {
     // Layout
@@ -178,7 +174,7 @@ export const translations = {
     haveAccount: "आधीच नोंदणी केली आहे? लॉगिन करा",
     noAccount: "खाते नाही? नोंदणी करा",
     demoCreds: "डेमो क्रेडेंशियल्स:",
-    userNotFound: "वापरकर्ता सापडला नाही. कृपया आधी नोंदणी करा.",
+    userNotFound: "वापरकर्ता सापडल नाही. कृपया आधी नोंदणी करा.",
     userExists: "या मोबाईल क्रमांकासह वापरकर्ता आधीच अस्तित्वात आहे. कृपया लॉगिन करा.",
     fillAllFields: "कृपया सर्व आवश्यक फील्ड भरा",
 
@@ -194,9 +190,6 @@ export const translations = {
     adminPanel: "प्रशासक पॅनेल",
     dealerPortal: "डीलर पोर्टल",
     farmerDashboard: "शेतकरी डॅशबोर्ड",
-    exploreCatalog: "आमची ट्रॅक्टर यादी",
-    supportedBrands: "समर्थित ब्रँड्स आणि मॉडेल्स",
-    viewModels: "मॉडेल्स पहा",
 
     // Customer Dashboard
     myQuotations: "माझे कोटेशन्स",
@@ -291,7 +284,6 @@ export const translations = {
     simulated: "(सिम्युलेटेड)",
     noneAssigned: "नेमून दिले नाही",
     cancelEdit: "रद्द",
-    save: "जतन करा",
-    youtubeIdLabel: "यूट्यूब व्हिडिओ ID"
+    save: "जतन करा"
   }
 };
